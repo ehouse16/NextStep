@@ -1,4 +1,11 @@
-책은 Junit4지만 이 프로젝트는 JUnit5 사용!
+## Ch 2 문자열 계산기 구현을 통한 테스트와 리팩토링
+
+2.1 main() 메서드를 활용한 테스트의 문제점
+
+- 소스코드를 구현한 후 정상적으로 동작하는 지 확인하는 방법은 `main()`메서드를 활용하는 것 (콘솔을 통해)
+- `main()`
+    - 프로그래밍을 실행하기 위한 목적
+    - 프로덕션 코드가 정상적으로 동작하는 지 확인하는 테스트 목적
 
 ```java
 import com.nextstep.chapter2.Calculator;
@@ -22,14 +29,14 @@ public class CalculatorTest {
 
 ```
 
-JUnit은 Calculator 같은 객체 초기화 작업을 위와 같이 구현하는 것을 추천 안함
+JUnit은 초기화 작업을 위와 같이 구현하는 것을 추천 안함
 
-대신 `@Before` 어노테이션 사용을 권장 
-(Junit5에서는 `@BeforeEach`로 바뀜)
+대신 `@Before` 어노테이션 사용을 권장
 
 `Calculator`인스턴스를 매 테스트마다 생성하는 이유는 다음 테스트 실행 시 영향을 미칠 수 있기 때문. 그럼 왜 `@Before` 어노테이션을 사용해야하나?
 
-- JUnit에는 `@RunWith`, `@Rule` 어노테이션을 사용해 기능을 확장가능한데, `@Before` 안이어야만 객체접근이 허용된다(JUnit5에서는 `@ExtendWith`, Rule 개념은 `Extension`으로 대체)
+- JUnit에는 `@RunWith`, `@Rule` 어노테이션을 사용해 기능을 확장가능한데, `@Before` 안이어야만 객체접근이 허용된다
+- `assertTrue()`, `assertFalse()`, `assertNull()`, `assertNotNull()`, `assertArrayEquals()` 등의 메서드 제공
 
 ```java
 public class StringCalculator {
