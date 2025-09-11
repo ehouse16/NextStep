@@ -196,3 +196,65 @@ log.debug("요청 URL에 해당하는 파일은: {}입니다.", new String(bytes
 ```
 
 그럼 index.html 파일을 쭉 읽어서 로그에 나옴
+
++) css 파일 가져오기
+
+```java
+dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
+```
+
+원래 response200Header()가 항상 text/html을 내려서 CSS, JS, 이미지 같은 리소스는 브라우저가 제대로 렌더링을 못했음
+
+→ URL 확장자에 따라 Content-Type을 나눠줘야함
+
+```java
+private void response200Header(DataOutputStream dos, int lengthOfBodyContent, String url){
+    try {
+        String contentType = getContentType(url);
+        dos.writeBytes("HTTP/1.1 200 OK \r\n");
+        dos.writeBytes("Content-Type: " + contentType + "\r\n");
+        dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
+        dos.writeBytes("\r\n");
+    } catch (IOException e) {
+        log.error(e.getMessage());
+    }
+ }
+ 
+ private String getContentType(String url) {
+    if(url.endsWith(".css")) return "text/css";
+    
+    return "text/html;charset=utf-8";
+}
+```
+
++) css 파일 가져오기
+
+```java
+dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
+```
+
+원래 response200Header()가 항상 text/html을 내려서 CSS, JS, 이미지 같은 리소스는 브라우저가 제대로 렌더링을 못했음
+
+→ URL 확장자에 따라 Content-Type을 나눠줘야함
+
+```java
+private void response200Header(DataOutputStream dos, int lengthOfBodyContent, String url){
+    try {
+        String contentType = getContentType(url);
+        dos.writeBytes("HTTP/1.1 200 OK \r\n");
+        dos.writeBytes("Content-Type: " + contentType + "\r\n");
+        dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
+        dos.writeBytes("\r\n");
+    } catch (IOException e) {
+        log.error(e.getMessage());
+    }
+ }
+ 
+ private String getContentType(String url) {
+    if(url.endsWith(".css")) return "text/css";
+    
+    return "text/html;charset=utf-8";
+}
+```
+
+![img_1.png](img_1.png)
