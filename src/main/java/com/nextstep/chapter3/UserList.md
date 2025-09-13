@@ -46,6 +46,13 @@ private void handleUserList(HttpRequest request, DataOutputStream dos) throws IO
 ```
 
 ```java
+public static Collection<User> findAll() {
+    return users.values();
+}
+```
+- `Database` 클래스에 `findAll` 추가
+ 
+```java
 public Map<String, String> getCookies(){
     String cookieHeader = headers.get("Cookie");
 
@@ -54,13 +61,7 @@ public Map<String, String> getCookies(){
 ```
 - `HttpRequest` 클래스에 cookie 값을 가져오는 메서드를 생성
 - `HttpRequestUtils`는 이미 존재하는 클래스임
-
-```java
-public static Collection<User> findAll() {
-    return users.values();
-}
-```
-- `Database` 클래스에 `findAll` 추가
+- cookieHeader 예시) sessionId=abc123; theme=dark; loggedIn=true
 
 ---
 
@@ -105,7 +106,31 @@ private static Map<String, String> parseValues(String values, String separator) 
     - 잘못된 형식등은 제외
   - `.collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()))`
     - Stream을 Map으로 수집
-    
+
++) 근데 생각해보면 header는
+```text
+GET /products?page=2&size=10 HTTP/1.1
+Host: www.example.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) 
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Cookie: sessionId=abc123; theme=dark
+```
+
+이렇게 생겼는데 Cookie 쪽을 보면 두번째인 theme과 ; 사이에 spacebar가 한칸 들어가있음
+<br>그렇게 되면 Map에 들어갈 때 key에 " theme" 이런식으로 들어가게 되지 않을까 하는 마음에 `trim`을 추가시켜 줌
+
+```java
+return Arrays.stream(tokens)
+        .map(String::trim)
+        .map(t -> getKeyValue(t, "="))
+        .filter(p -> p != null)
+        .collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
+```
+이런식으로 `.map(String::trim)`을 추가시켜 줌
+
 ---
 
 ![img_7.png](img_7.png)
