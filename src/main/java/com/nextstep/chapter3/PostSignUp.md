@@ -146,3 +146,34 @@ private void doPost(HttpRequest request, DataOutputStream dos) throws IOExceptio
 
 **고민**
 - `run()` 메서드를 최대한 간결하게 하고 싶은데 `doGet()`이나 `doPost()`를 `RequestHandler`에 두는게 맞는가?
+
+---
+
+배포하고나서 문제 생김
+
+회원가입 버튼을 누르면 
+```text
+Exception in thread "Thread-270" java.lang.ArrayIndexOutOfBoundsException: Index 1 out of bounds for length 1
+	at util.HttpRequest.<init>(HttpRequest.java:18)
+	at webserver.RequestHandler.run(RequestHandler.java:33)
+```
+
+이유가 무엇인가?
+```java
+String[] header = line.split(" ");
+this.method = header[0]; // method 저장
+this.url = header[1]; // URL 저장
+```
+- 헤더 라인이나 요청 라인이 예상과 달라서 split(" ") 후 길이가 2 미만이라 그럼
+  - 브라우저가 /favicon.ico 요청을 보내거나
+  - 빈 라인 혹은 이상한 요청이 들어오는 경우
+
+```java
+if(header.length < 2){
+    log.debug("Headers 2개보다 적음");
+}
+this.method = header[0]; // method 저장
+this.url = header[1]; // URL 저장
+```
+HttpRequest에 추가하니 동작 잘함!
+
